@@ -61,7 +61,7 @@ def get_users():
       userToAdd = request.get_json()
       userToAdd['id'] = random.randint(1,1000000)
       users['users_list'].append(userToAdd)
-      resp = jsonify(), 201
+      resp = jsonify(userToAdd), 201
       return resp
 
 @app.route('/users/<id>', methods=['GET', 'DELETE'])
