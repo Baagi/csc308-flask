@@ -4,7 +4,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def hello_world():
-    return 'Hello, World!'
+   return 'Hello, World!'
 
 users = { 
    'users_list' :
@@ -41,8 +41,14 @@ users = {
 def get_users():
    if request.method == 'GET':
       search_username = request.args.get('name')
-      if search_username :
-         subdict = {'users_list' : []}
+      search_job = request.args.get('job')
+      subdict = {'users_list' : []}
+      if search_username and search_job:
+         for user in users['users_list']:
+            if user['name'] == search_username and user['job'] == search_job:
+               subdict['users_list'].append(user)
+         return subdict
+      elif search_username:
          for user in users['users_list']:
             if user['name'] == search_username:
                subdict['users_list'].append(user)
@@ -52,24 +58,21 @@ def get_users():
       userToAdd = request.get_json()
       users['users_list'].append(userToAdd)
       resp = jsonify(success=True)
-      #resp.status_code = 200 #optionally, you can always set a response code. 
-      # 200 is the default code for a normal response
       return resp
 
 @app.route('/users/<id>', methods=['GET', 'DELETE'])
 def get_user(id):   
-    if id :
-        if request.method == 'GET':
-            for user in users['users_list']:
-                if user['id'] == id:
-                    return user
-            return ({})
-        elif request.method == 'DELETE':
-            for user in users['users_list']:
-                if user['id'] == id:
-                    users['users_list'].remove(user)
-                    resp = jsonify(), 204
-                    return resp
-            resp = jsonify({"msg:": "user id not found"}), 404
-            return resp
-    return users
+   if id :
+      if request.method == 'GET':
+         for user in users['users_list']:
+            if user['id'] == id:
+               return user
+         return ({})
+      elif request.method == 'DELETE':
+         for user in users['users_list']:
+            if user['id'] == id:
+               users['users_list'].remove(user)
+               resp = jsonify(), 204
+               return resp
+         return ("")
+   return users
